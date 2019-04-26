@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 after deleting pets it will hide checkboxes and set false to checkBoxState and
                 we need change menu icon back to three dots
                 */
-                invalidateOptionsMenu();
+                    invalidateOptionsMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

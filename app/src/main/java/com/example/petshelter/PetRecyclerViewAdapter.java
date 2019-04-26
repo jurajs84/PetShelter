@@ -151,6 +151,7 @@ public class PetRecyclerViewAdapter extends RecyclerView.Adapter<PetRecyclerView
         }
         checkBoxState = false;
         sparseBooleanArray.clear(); // to unselected items after deleting
+        notifyDataSetChanged();//because we changed checkBoxState
         return toDeletePets.toArray(new Pet[toDeletePets.size()]);
     }
 
