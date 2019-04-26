@@ -60,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
             //pay attention to select ADD_EDIT_REQUEST
             startActivityForResult(intent, EDIT_PET_REQUEST);
         });
+
+        adapter.setOnLongClickListener(() -> {
+            //force onCreateOptionsMenu when checkboxes are visible to change menu icon
+            //change menu icon back to three dots or trash icon
+            invalidateOptionsMenu();
+        });
     }
 
     @Override
@@ -99,8 +105,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_activity_menu, menu);
-        return true;
+        if (adapter.isCheckBoxesVisible()) {
+            //trash icon
+            menuInflater.inflate(R.menu.main_activity_menu_delete_only, menu);
+            return true;
+        } else {
+            //three dots icon
+            menuInflater.inflate(R.menu.main_activity_menu, menu);
+            return true;
+        }
     }
 
     @Override
@@ -108,9 +121,6 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.delete_all:
                 petViewModel.deleteAll();
-                return true;
-            case R.id.delete_pets:
-                petViewModel.delete(adapter.getDeletePetsArray());
                 return true;
             case R.id.add_dummy_pets:
                 Pet[] dummyPets = {new Pet("pet1", "breed1", 1, 11),
@@ -127,8 +137,28 @@ public class MainActivity extends AppCompatActivity {
                                    new Pet("pet12", "breed2", 1, 12),};
                 petViewModel.insert(dummyPets);
                 return true;
+            case R.id.delete_selected_pets://trash icon
+                petViewModel.delete(adapter.getDeletePetsArray());
+                /*
+                after deleting pets it will hide checkboxes and set false to checkBoxState and
+                we need change menu icon back to three dots
+                */
+                invalidateOptionsMenu();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    //when checkboxes are visible, back button will hide them
+    @Override
+    public void onBackPressed() {
+        if (adapter.isCheckBoxesVisible()) {
+            adapter.hideCheckBoxes();
+            //change menu icon back to three dots
+            invalidateOptionsMenu();
+        } else {
+            finish();
         }
     }
 }

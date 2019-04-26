@@ -1,18 +1,10 @@
 package com.example.petshelter;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,7 +19,8 @@ public class PetRecyclerViewAdapter extends RecyclerView.Adapter<PetRecyclerView
     private List<Pet> allPetList = new ArrayList<>();
     private SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
     private Boolean checkBoxState = false;
-    private OnItemClickListener listener;
+    private OnItemClickListener clickListener;
+    private OnLongClickListener longClickListener;
 
     @NonNull
     @Override
@@ -86,7 +79,8 @@ public class PetRecyclerViewAdapter extends RecyclerView.Adapter<PetRecyclerView
             linearLayout = itemView.findViewById(R.id.item_LinearLayout);
             //set listeners here in MyViewHolder NO in onBindViewHolder
             //showing and hiding checkboxes with long click
-            linearLayout.setOnLongClickListener(v -> {
+            itemView.setOnLongClickListener(v -> {
+                longClickListener.onLongClick();//need it for calling it from mainActivity
                 if (checkBoxState) {
                     checkBoxState = false;
                     //will call onBindViewHolder and then call decision to show or hide
@@ -114,12 +108,12 @@ public class PetRecyclerViewAdapter extends RecyclerView.Adapter<PetRecyclerView
                 }
             });
 
-            //3. creating click listener in our holder
+            //3. creating click clickListener in our holder
             //next step in MainActivity onCreate method
             itemView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
-                if (listener != null && position != RecyclerView.NO_POSITION){//crash avoiding
-                    listener.onItemClick(allPetList.get(position));
+                if (clickListener != null && position != RecyclerView.NO_POSITION){//crash avoiding
+                    clickListener.onItemClick(allPetList.get(position));
                 }
             });
 
@@ -165,9 +159,27 @@ public class PetRecyclerViewAdapter extends RecyclerView.Adapter<PetRecyclerView
         void onItemClick(Pet pet);
     }
 
+    public interface OnLongClickListener{
+        void onLongClick();
+    }
+
     //2. create method for clickable notes and chose OnItemClickListener from this package
-    //do not forget to create variable listener in this class
+    //do not forget to create variable clickListener in this class
     public void setOnItemClickListener(OnItemClickListener listener){
-        this.listener = listener;
+        this.clickListener = listener;
+    }
+
+    public void setOnLongClickListener(OnLongClickListener listener) {
+        this.longClickListener = listener;
+    }
+
+    //helper method to get state if checkboxes are visible
+    public Boolean isCheckBoxesVisible(){
+        return checkBoxState;
+    }
+    //helper method to hide checkboxes by back button
+    public void hideCheckBoxes(){
+        checkBoxState = false;
+        notifyDataSetChanged();
     }
 }

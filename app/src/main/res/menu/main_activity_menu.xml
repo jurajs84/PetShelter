@@ -4,9 +4,6 @@
     <item android:id="@+id/delete_all"
         android:title="Delete All"
         app:showAsAction="never"/>
-    <item android:id="@+id/delete_pets"
-        android:title="Delete selected pets"
-        app:showAsAction="never"/>
     <item android:id="@+id/add_dummy_pets"
         android:title="Add dummy pets"/>
 </menu>

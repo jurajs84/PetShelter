@@ -51,7 +51,7 @@ public class AddEditPet extends AppCompatActivity {
             petName.setText(intent.getStringExtra(EXTRA_NAME));
             petBreed.setText(intent.getStringExtra(EXTRA_BREED));
             petWeight.setText(String.valueOf(intent.getIntExtra(EXTRA_WEIGHT, 0)));
-            genderSpinner.setSelection(intent.getIntExtra(EXTRA_GENDER, 0));//todo
+            genderSpinner.setSelection(intent.getIntExtra(EXTRA_GENDER, 0));
         }
         else {
             setTitle("Add pet");
